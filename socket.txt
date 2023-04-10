@@ -1,0 +1,59 @@
+Socket:
+    é um nó virtual utilizado para comunicação de rede, as aplicações mais comuns para sockets são,
+    cliente-servidor, nas quais um servidor espera por conexões de clientes;
+
+Módulo socket python:
+    socket()
+    
+    bind(endereço) -> fazer o bin, vincular porta com o endereço ip
+
+    listen() -> escutar, aguardar conexões
+
+    accept() -> aceitar conexão
+
+    connect(endereço) -> conectar
+
+    connect_ex(endereço) -> conecta retornando um indicativo de erro invés de uma exceção.
+
+    getpeername() -> retorna o endereço do socket remoto com qual um socket local está associado.
+
+    getsockname() -> retorna o endereço do socket local.
+
+    send(bytes) -> solicita o envio dos bytes pelo socket até que um certo conjunto de bytes seja enviado -
+    buffer suficiente para garantir o envio
+
+    sendall(bytes) -> envia todos os bytes passados como parametros, o que ocasiona successivos envios em chamadas de sistema
+    até que todos os bytes sejam enviados
+
+    recv(bufsize) -> le o sbytes recebidos, retornado-os em uma string, até o limite de buffer definido por buusize
+
+    recvfrom(bufsize) -> (UDP) faz o mesmo do anterior mas UDP
+
+    close() -> fechar
+
+Interfaces de sockets:
+
+    - Interface de soquetes fluxo(stream): Define um serviço orientado à conexão confiável (sobre TCP). Dados são enviados sem erros
+    ou duplicação, e recebidos na mesma ordem em que foram enviados. SOCK_STREAM
+
+    - Interface de soquetes de datagrama: Define um serviço sem conexão (sobre UDP). Os datagramas são enviados como pacotes independentes
+    Não há garantias, pois os dados podem ser perdidos ou duplicados, e ainda chegarem fora de ordem. SOCK_DGRAM
+
+    - Interface de soquetes brutos: Permite acesso direto a protocolos na camada inferior, como por exemplo ICMP e IP.
+    Exemplo de aplicação: programa ping. SOCK_RAW
+
+
+socket.family = Familia do socket criado
+socket.type = tipo do socket criado
+socket.proto = protocolo associado ao socket
+
+Família de endereços:
+    AF_INET (endereço IPv4)
+    AF_INET6 (endereço IPv6)
+Tipos de socket:
+    SOCK_STREAM (para socket TCP)
+    SOCK_DGRAM (para socket UDP)
+Protocolo(Variação do protocolo em uma família)
+    Geralmente, 0.
+
+
