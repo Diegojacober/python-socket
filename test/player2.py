@@ -9,7 +9,6 @@ msg = input()
 while msg != '\x18':
     tcp.send (msg.encode())
     data = tcp.recv(1024)
-    print(f"Mensagem ecoada: {data.decode()}")
+    print(f"Mensagem ecoada: \n{data.decode()}")
     msg = input()
-    
 tcp.close()
