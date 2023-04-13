@@ -29,7 +29,7 @@ class Game():
         self.__player2_port = val
 
     def print_board(self):
-        board = ''
+        board = '\n'
         for row in range(3):
             board += (" | ".join(self.__board[row])+"\n")
             if row != 2:
@@ -63,7 +63,7 @@ class Game():
 
     def apply_move(self, move):
         if self.__game_over:
-            return
+            return "acabou"
         self.counter += 1
         self.__board[int(move[0])][int(move[1])] = self.turn
         
@@ -90,7 +90,7 @@ def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        server.bind(('localhost', 5000))
+        server.bind(('10.21.58.85', 5000))
         # recebe somente duas conexões, se não passar ele recebe quantas conexões chegarem
         server.listen(2)
     except:
@@ -101,9 +101,9 @@ def main():
       
         clients.append(client)
         addrs.append(addr[1])
-        if len(clients) < 2:
-            time.sleep(2)
-            broadcast(msg='Aguardando jogadores', client=client)
+        # if len(clients) < 2:
+            # time.sleep(2)
+            # broadcast(msg='Aguardando jogadores', client=client)
         if len(clients) == 2:
             if jogo.player1_port == None or jogo.player2_port == None:
                 jogo.player1_port = addrs[0]
@@ -121,36 +121,45 @@ def delete_client(client):
 
 def broadcast(msg, client):
     for clientItem in clients:
-        if clientItem != client:
-            try:
-                clientItem.send(msg.encode())
-            except:
-                delete_client(clientItem)
-        else:
-            ...
+        # print(clientItem)
+        try:
+            clientItem.send(msg.encode())
+        except:
+            delete_client(clientItem)
+
+def delete_all_clients():
+    for clientItem in clients:
+        delete_client(clientItem)
+     
 
 
 def messagesTreatment(client, port):
     while True:
         try:
-            retorno = None
             msg = client.recv(2048)
             if jogo.turn == "X" and jogo.player1_port == port:
                 posicoes = msg.decode().split(",")
-                print(posicoes)
+                print('jogador 1:', posicoes)
                 if jogo.check_valid_move(posicoes):
-                    jogo.apply_move(posicoes)
+                    apply = jogo.apply_move(posicoes)
+                    if apply != None:
+                        broadcast(str(jogo.print_board()+"\n\n"+apply), client)
+                        break
+                    print(apply)
                     
             if jogo.turn == "O" and jogo.player2_port == port:
                 posicoes = msg.decode().split(",")
-                print(posicoes)
+                print('jogador 2: ',posicoes)
                 if jogo.check_valid_move(posicoes):
-                    jogo.apply_move(posicoes)
+                    apply = jogo.apply_move(posicoes)
+                    if apply != None:
+                        broadcast(str(jogo.print_board()+"\n\n"+apply), client)
+                        break
+                    print(apply)
+          
+            retorno = jogo.print_board()+"\nVez do jogador: "+jogo.turn
             
-            print(jogo.print_board())
-                    
-                    
-            broadcast(msg=msg, client=client)
+            broadcast(str(retorno), client)
         except:
             delete_client(client)
             break
